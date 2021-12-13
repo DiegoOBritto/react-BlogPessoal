@@ -1,9 +1,9 @@
 .caixa{
-    background-color:whitesmoke;
+    background-color: grey;
 }
 
 .titulo{
-    color: black;
+    color: rgb(136, 119, 119);
     font-weight: bold;
 }
 
