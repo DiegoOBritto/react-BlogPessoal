@@ -1,14 +1,17 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Grid, Box, Typography, TextField, Button } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
-import useLocalStorage from 'react-use-localstorage';
 import { login } from '../../services/Service';
 import UserLogin from '../../models/UserLogin';
 import './Login.css';
+import { useDispatch } from 'react-redux';
+import { addToken } from '../../store/tokens/actions';
+import { toast } from 'react-toastify';
 
 function Login() {
     let history = useHistory();
-    const[token, setToken] = useLocalStorage('token');
+    const dispatch = useDispatch();
+    const [token, setToken] = useState('');
     const [userLogin, setUserLogin] = useState<UserLogin>(
         {
             id: 0,
@@ -25,8 +28,9 @@ function Login() {
         })
     }
 
-    useEffect(()=>{
-        if (token != ''){
+    useEffect(() => {
+        if (token != '') {
+            dispatch(addToken(token))
             history.push('/home')
         }
     }, [token])
@@ -34,13 +38,32 @@ function Login() {
     async function onSubmit(e: ChangeEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        try{
+        try {
             await login(`usuarios/logar`, userLogin, setToken)
 
-            alert('Usuário logado com sucesso!!!');
+            toast.success('Usuário logado com sucesso!!!', {
+                position: 'top-right',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                theme: 'colored',
+                progress: undefined,
+            });
+
         }
-        catch(error){
-            alert('Dados inconsistentes, erro ao logar!!!');
+        catch (error) {
+            toast.error('Dados incosistenter, erro ao logar!!!', {
+                position: 'top-right',
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                theme: 'colored',
+                progress: undefined,
+            });
         }
     }
 
@@ -53,9 +76,9 @@ function Login() {
                         <TextField value={userLogin.usuario} onChange={(e: ChangeEvent<HTMLInputElement>) => updateModel(e)} id='usuario' label='usuario' variant='outlined' name='usuario' margin='normal' fullWidth />
                         <TextField value={userLogin.senha} onChange={(e: ChangeEvent<HTMLInputElement>) => updateModel(e)} id='senha' label='senha' variant='outlined' name='senha' margin='normal' type='password' fullWidth />
                         <Box>
-                                <Button type='submit' variant='contained' color='primary'>
-                                    Logar
-                                </Button>
+                            <Button type='submit' variant='contained' color='primary'>
+                                Logar
+                            </Button>
                         </Box>
                     </form>
                     <Box display='flex' justifyContent='center' marginTop={2}>
